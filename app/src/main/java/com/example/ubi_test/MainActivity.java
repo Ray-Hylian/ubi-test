@@ -4,15 +4,13 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
-import android.widget.ImageView;
-import android.widget.TextView;
+import android.view.View;
 import android.widget.Toast;
 
-import com.example.ubi_test.Utils.Capture;
+import com.example.ubi_test.databinding.ActivityMainBinding;
 import com.google.zxing.integration.android.IntentIntegrator;
 import com.google.zxing.integration.android.IntentResult;
 
@@ -20,19 +18,15 @@ public class MainActivity extends AppCompatActivity {
 
     private final int REQUEST_CODE_SCAN = 10;
     private final String TAG = MainActivity.class.getSimpleName();
-    private TextView mainText;
-    private TextView resultText;
-    private ImageView resultImage;
+
+    private ActivityMainBinding binding;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
-
-        mainText = findViewById(R.id.main_txt);
-        resultText = findViewById(R.id.result_txt);
-        resultImage = findViewById(R.id.result_img);
-
+        binding = ActivityMainBinding.inflate(getLayoutInflater());
+        View view = binding.getRoot();
+        setContentView(view);
     }
 
     /**
@@ -67,8 +61,6 @@ public class MainActivity extends AppCompatActivity {
                 //Locked orientation
                 intentIntegrator.setOrientationLocked(true);
 
-                //Set capture activity
-                //intentIntegrator.setCaptureActivity(Capture.class);
 
                 //Initiate scan
                 intentIntegrator.initiateScan();
@@ -96,8 +88,8 @@ public class MainActivity extends AppCompatActivity {
 
         //for timer scanner
         if (requestCode == REQUEST_CODE_SCAN) {
-            mainText.setText("Total: " + data.getIntExtra("result", 0));
-            commentResult();
+            binding.mainTxt.setText("Total: " + data.getIntExtra("result", 0));
+            commentResult(data);
 
             //for simple scan
         } else {
@@ -116,19 +108,25 @@ public class MainActivity extends AppCompatActivity {
 
     /**
      * Scoring according to number of scanned items
+     * @param data
      */
-    public void commentResult(){
-        if(REQUEST_CODE_SCAN <= 5){
-            resultText.setText("Not enough, 1/3");
-            resultImage.setImageResource(R.drawable.insufficient);
+    public void commentResult(Intent data){
+
+        int score = data.getIntExtra("result", 0);
+
+        if(score <= 5){
+            binding.resultTxt.setText("Not enough");
+            binding.resultImg.setImageResource(R.drawable.insufficient);
         }
-        if(REQUEST_CODE_SCAN < 6 && REQUEST_CODE_SCAN >= 10){
-            resultText.setText("Not too bad, 2/3");
-            resultImage.setImageResource(R.drawable.average);
+
+        else if(score > 5 && score <= 10){
+            binding.resultTxt.setText("Not too bad");
+            binding.resultImg.setImageResource(R.drawable.average);
         }
+
         else{
-            resultText.setText("Very good, 3/3");
-            resultImage.setImageResource(R.drawable.good);
+            binding.resultTxt.setText("Very good");
+            binding.resultImg.setImageResource(R.drawable.good);
 
         }
     }

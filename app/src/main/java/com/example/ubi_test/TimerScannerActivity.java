@@ -9,6 +9,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.util.Log;
+import android.view.View;
 import android.widget.Toast;
 
 import com.budiyev.android.codescanner.CodeScanner;
@@ -16,6 +17,8 @@ import com.budiyev.android.codescanner.CodeScannerView;
 import com.budiyev.android.codescanner.DecodeCallback;
 import com.budiyev.android.codescanner.ErrorCallback;
 import com.budiyev.android.codescanner.ScanMode;
+import com.example.ubi_test.databinding.ActivityMainBinding;
+import com.example.ubi_test.databinding.ActivityTimerScannerBinding;
 import com.google.zxing.Result;
 
 import java.util.ArrayList;
@@ -30,18 +33,20 @@ public class TimerScannerActivity extends AppCompatActivity {
     //Variables initializing
     private final String TAG = TimerScannerActivity.class.getSimpleName();
     private final int REQUEST_CODE_CAMERA = 2;
-    private final int SCAN_DELAY = 5000;
+    private final int SCAN_DELAY = 25000;
     private List<String> scannedItems = new ArrayList<>();
     private CodeScanner codeScanner;
-    private CodeScannerView codeScannerView;
+
+    private ActivityTimerScannerBinding binding;
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_timer_scanner);
+        binding = ActivityTimerScannerBinding.inflate(getLayoutInflater());
+        View view = binding.getRoot();
+        setContentView(view);
 
-        codeScannerView = findViewById(R.id.scanner_view);
 
         initCountdownScan();
         stopScanDelay();
@@ -75,7 +80,7 @@ public class TimerScannerActivity extends AppCompatActivity {
      * Initializing the scanner and counting numbers of scanned items ONLY if different
      */
     public void initCountdownScan() {
-        codeScanner = new CodeScanner(this, codeScannerView);
+        codeScanner = new CodeScanner(this, binding.scannerView);
         codeScanner.setScanMode(ScanMode.CONTINUOUS);
         codeScanner.setDecodeCallback(new DecodeCallback() {
             @Override

@@ -26,6 +26,10 @@ android {
         sourceCompatibility JavaVersion.VERSION_1_8
         targetCompatibility JavaVersion.VERSION_1_8
     }
+
+    buildFeatures {
+        viewBinding true
+    }
 }
 
 dependencies {
@@ -40,7 +44,7 @@ dependencies {
     //for permissions
     implementation 'pub.devrel:easypermissions:3.0.0'
 
-    //for scan
+    //for scan using
     implementation 'com.journeyapps:zxing-android-embedded:4.2.0'
     implementation 'com.budiyev.android:code-scanner:2.1.0'
 }
